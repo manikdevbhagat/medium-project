@@ -3,7 +3,6 @@ import { Blog } from "@/models/interfaces";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import useDebounce from "./useDebounce";
-import toast from "react-hot-toast";
 
 const useBlogs = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -22,7 +21,7 @@ const useBlogs = () => {
         const data = await blogService.getAllBlogs(searchParam);
         setBlogs(data.blogs);
       } catch (error) {
-        toast.error("Failed to fetch blogs");
+        console.log(error);
       } finally {
         setLoading(false);
       }
