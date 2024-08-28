@@ -1,0 +1,9 @@
+html {
+  --tw-bg-opacity: 1;
+  background-color: #f7f4ed;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
