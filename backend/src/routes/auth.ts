@@ -9,6 +9,7 @@ export const authRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
+    PASSWORD_SALT: string;
   };
   Variables: {
     userId: string;
@@ -40,7 +41,10 @@ authRouter.post("/signup", async (c) => {
       c.status(403);
       return c.json({ message: "Email already exists" });
     }
-    const hashedPassword = await hashPassword(body.password);
+    const hashedPassword = await hashPassword(
+      body.password,
+      c.env.PASSWORD_SALT
+    );
     // Create new user
     const user = await prisma.user.create({
       data: {
@@ -84,7 +88,11 @@ authRouter.post("/signin", async (c) => {
       c.status(403);
       return c.json({ message: "User does not exist" });
     }
-    const passwordMatch = await verifyPassword(user.password, body.password);
+    const passwordMatch = await verifyPassword(
+      user.password,
+      body.password,
+      c.env.PASSWORD_SALT
+    );
     if (!passwordMatch) {
       c.status(403);
       return c.json({ message: "Invalid password" });

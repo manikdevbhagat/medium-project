@@ -8,6 +8,7 @@ export const userRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
+    PASSWORD_SALT: string;
   };
   Variables: {
     userId: string;
@@ -55,7 +56,10 @@ userRouter.put("/", async (c) => {
     return c.json({ message: "Invalid inputs" });
   }
   try {
-    const hashedPassword = await hashPassword(body.password);
+    const hashedPassword = await hashPassword(
+      body.password,
+      c.env.PASSWORD_SALT
+    );
     const updatedUser = await prisma.user.update({
       where: {
         id: userId,
